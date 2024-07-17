@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-client-dep
+  labels:
+    app: eureka-client-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-client-dep
+  template:
+    metadata:
+      name: eureka-client-dep
+      labels:
+        app: eureka-client-dep
+    spec:
+      containers:
+        - name: eureka-client
+          image: eureka-client
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: EUREKA_URI
+              value: "http://eureka-sts-0.eureka-svc.default.svc.cluster.local:8761/eureka/,http://eureka-sts-1.eureka-svc.default.svc.cluster.local:8761/eureka/,http://eureka-sts-2.eureka-svc.default.svc.cluster.local:8761/eureka/"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-client-svc
+spec:
+  selector:
+    app: eureka-client-dep
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
