@@ -4,7 +4,7 @@ metadata:
   name: eureka-svc
 spec:
   selector:
-    app: eureka-sts
+    app: eureka-sts   #这个值必须和StatefulSet的spec.selector.matchLabels.app一致
   ports:
     - protocol: TCP
       port: 8761
